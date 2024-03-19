@@ -20,18 +20,17 @@ def blink_led():
 # Main program
 try:
     while True:
-        if wiringpi.digitalRead(pin_switch) == 1:  # Input is active high
+        if wiringpi.digitalRead(pin_switch) == 0:  # Input is active low
             print("Button Pressed")
             time.sleep(0.3)  # Anti-bouncing
-            while wiringpi.digitalRead(pin_switch) == 1:  # Wait until button released
-                time.sleep(0.5)  # Anti-bouncing
-                print("LED not flashing")
-                wiringpi.digitalWrite(pin_led, 0)  # Turn off LED if button is pressed
+            while wiringpi.digitalRead(pin_switch) == 0:  # Wait until button released
+                print("LED blinks")
+                blink_led()  # Blink LED while button is pressed
         else:
             print("Button released")
-            time.sleep(0.3)  # Anti-bouncing
-            print("LED blinks")
-            blink_led()  # Blink LED while button is released
+            time.sleep(0.5)  # Anti-bouncing
+            print("LED not flashing")
+            wiringpi.digitalWrite(pin_led, 0)  # Turn off LED if button released
         time.sleep(0.5)  # Add a small delay to avoid high CPU usage
 except KeyboardInterrupt:
     print("\nProgram terminated.")
