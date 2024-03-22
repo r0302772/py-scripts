@@ -21,18 +21,16 @@ def measure_distance():
 
     # Wait for the pulse to return
     while wiringpi.digitalRead(ECHO_PIN) == wiringpi.LOW:
-        pass
-    signal_high = time.time()
+        signal_high = time.time()
 
     while wiringpi.digitalRead(ECHO_PIN) == wiringpi.HIGH:
-        pass
-    signal_low = time.time()
+        signal_low = time.time()
 
     # Calculate time passed
     time_passed = signal_low - signal_high
 
     # Calculate distance in centimeters
-    distance = time_passed * 17000 / 2  # Divide by 2 (back and forth) and multiply by speed of sound in cm/s
+    distance = time_passed * 17000  # Divide by 2 (back and forth) and multiply by speed of sound in cm/s
 
     return distance
 
@@ -40,7 +38,7 @@ def measure_distance():
 try:
     while True:
         distance = measure_distance()
-        print("Measured Distance = {:.1f} cm".format(distance))
+        print(f"Measured Distance = {round(distance, 2)} cm")
         time.sleep(0.1)  # Adjust interval as needed
 except KeyboardInterrupt:
     print("\nProgram terminated.")
