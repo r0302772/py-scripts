@@ -53,6 +53,7 @@ def measure_distance():
 pin_CS_adc = 16  # We will use w16 as CE, not the default pin w15!
 pin_led_1 = 2  # Pin for first LED
 pin_led_2 = 3  # Pin for second LED
+pin_led_rgb_red = 10
 TRIGGER_PIN = 1  # Output pin for ultrasonic sensor
 ECHO_PIN = 4     # Input pin for ultrasonic sensor
 min_brightness = 20  # Set minimum brightness value
@@ -63,6 +64,7 @@ wiringpi.pinMode(TRIGGER_PIN, wiringpi.OUTPUT)
 wiringpi.pinMode(ECHO_PIN, wiringpi.INPUT)
 wiringpi.wiringPiSPISetupMode(1, 0, 500000, 0)  # (channel, port, speed, mode)
 wiringpi.softPwmCreate(pin_led_1, 0, 100)  # Set pin2 as a softPWM output
+wiringpi.pinMode(pin_led_rgb_red, 1)  # Set pin10 to mode 1 ( OUTPUT )
 
 # Main
 try:
@@ -74,10 +76,15 @@ try:
         controlLEDs(pin_led_1, pin_led_2, tmp0 // 10, min_brightness)  # Control LED brightness based on potentiometer
         distance = measure_distance()
         print(f"Measured Distance = {round(distance, 2)} cm")
+        if distance < 50:
+            wiringpi.digitalWrite(pin_led_rgb_red, 1)  # Turn on the red LED
+        else:
+            wiringpi.digitalWrite(pin_led_rgb_red, 0)  # Turn off the red LED
         time.sleep(0.2)
 
 except KeyboardInterrupt:
     wiringpi.softPwmWrite(pin_led_1, 0)  # stop the PWM output
     wiringpi.digitalWrite(pin_led_2, 0)  # Turn off the second LED
+    wiringpi.digitalWrite(pin_led_rgb_red, 0)  # Turn off the red LED
     DeactivateADC()
     print("\nProgram terminated")
