@@ -29,14 +29,14 @@ def controlLEDs(sig1, sig2, cnt, min_brightness):
 
 # Setup
 pin_CS_adc = 16  # We will use w16 as CE, not the default pin w15!
-pin2 = 2  # Pin for first LED
-pin3 = 3  # Pin for second LED
+pin_led_1 = 2  # Pin for first LED
+pin_led_2 = 3  # Pin for second LED
 min_brightness = 20  # Set minimum brightness value
 wiringpi.wiringPiSetup()
 wiringpi.pinMode(pin_CS_adc, 1)  # Set ce to mode 1 ( OUTPUT )
-wiringpi.pinMode(pin3, 1)  # Set pin3 to mode 1 ( OUTPUT )
+wiringpi.pinMode(pin_led_2, 1)  # Set pin3 to mode 1 ( OUTPUT )
 wiringpi.wiringPiSPISetupMode(1, 0, 500000, 0)  # (channel, port, speed, mode)
-wiringpi.softPwmCreate(pin2, 0, 100)  # Set pin2 as a softPWM output
+wiringpi.softPwmCreate(pin_led_1, 0, 100)  # Set pin2 as a softPWM output
 
 # Main
 try:
@@ -45,11 +45,11 @@ try:
         tmp0 = readadc(0)  # read channel 0
         DeactivateADC()
         print ("input0:",tmp0)
-        controlLEDs(pin2, pin3, tmp0 // 10, min_brightness)  # Control LED brightness based on potentiometer
+        controlLEDs(pin_led_1, pin_led_2, tmp0 // 10, min_brightness)  # Control LED brightness based on potentiometer
         time.sleep(0.2)
 
 except KeyboardInterrupt:
-    wiringpi.softPwmWrite(pin2, 0)  # stop the PWM output
-    wiringpi.digitalWrite(pin3, 0)  # Turn off the second LED
+    wiringpi.softPwmWrite(pin_led_1, 0)  # stop the PWM output
+    wiringpi.digitalWrite(pin_led_2, 0)  # Turn off the second LED
     DeactivateADC()
     print("\nProgram terminated")
